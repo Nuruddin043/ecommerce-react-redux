@@ -1,9 +1,10 @@
 import React from "react";
 import { Toolbar, Typography, Button, Container,Grid,MenuItem } from "@material-ui/core";
 import {useHistory} from 'react-router-dom'
-
+import {useSelector} from 'react-redux'
 
 const Navigation = () => {
+  const {count}=useSelector((state)=>state.cartStore)
     const history=useHistory()
     const routePage=(url)=>{
         history.push(url)
@@ -17,9 +18,7 @@ const Navigation = () => {
             <Grid item>
               <MenuItem onClick={() => routePage("/")}> Home</MenuItem>
             </Grid>
-            <Grid item>
-              <MenuItem onClick={() => routePage("/")}> Product</MenuItem>
-            </Grid>
+       
             <Grid item>
               <MenuItem onClick={() => routePage("/cart")}>
                 Cart
@@ -30,7 +29,7 @@ const Navigation = () => {
           <Grid container justify="flex-end">
      
             <Grid item>
-              <MenuItem onClick={() => routePage("/")}> Total Item:0</MenuItem>
+              <MenuItem onClick={() => routePage("/")}> Total Item:{count}</MenuItem>
             </Grid>
            
            

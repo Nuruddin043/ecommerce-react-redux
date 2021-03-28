@@ -3,6 +3,11 @@ import {Container,Grid,CircularProgress,Card,CardActionArea,CardMedia,CardConten
 import { makeStyles } from '@material-ui/core/styles';
 import axios from 'axios'
 import { useHistory } from "react-router-dom";
+import { useSelector,useDispatch} from 'react-redux'
+import {storeAllProduct} from '../../store/action/productAction'
+
+
+
 
 const useStyles = makeStyles({
   root: {
@@ -18,17 +23,22 @@ const useStyles = makeStyles({
 
 
 const Product=()=>{
+  const dispatch=useDispatch()
+  const {productList}=useSelector((state)=>state.productStore)
+ 
+
   const classes = useStyles();
   const history = useHistory()
-  const [productList,setProductList]=useState([])
+
   const [loading,setLoading]=useState(true)
 
 
    useEffect(()=>{
     let url="http://54.162.199.74/products"
-    axios.get(url).then((data)=>{
-      setProductList(data.data)
+    axios.get(url).then((res)=>{
       setLoading(false)
+      dispatch(storeAllProduct(res.data))
+      
     }).catch((e)=>{
       console.log(e)
     })
@@ -42,7 +52,7 @@ const Product=()=>{
         <Container>
         {loading && <CircularProgress  style={{marginLeft: '50%',marginTop:'30%'}} />}
         <Grid container spacing={2} style={{marginTop:'10px'}}>
-            {productList.length>0 && productList.map((product, index) => {
+            {productList && productList.map((product, index) => {
                    return <Grid item md={4} sm={6} key={index} >
                     <Card className={classes.root}>
                       <CardActionArea onClick={()=>handleClick(product.id)}>
