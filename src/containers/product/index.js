@@ -1,13 +1,9 @@
-import React,{useEffect,useState} from 'react';
-import {Container,Grid,CircularProgress,Card,CardActionArea,CardMedia,CardContent,Typography,CardActions,Button} from '@material-ui/core';
+import React,{useEffect} from 'react';
+import {Container,Grid,CircularProgress,Card,CardActionArea,CardMedia,CardContent,Typography} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import axios from 'axios'
 import { useHistory } from "react-router-dom";
 import { useSelector,useDispatch} from 'react-redux'
 import {storeAllProduct} from '../../store/action/productAction'
-
-
-
 
 const useStyles = makeStyles({
   root: {
@@ -21,27 +17,16 @@ const useStyles = makeStyles({
   }
 });
 
-
 const Product=()=>{
   const dispatch=useDispatch()
   const {productList}=useSelector((state)=>state.productStore)
- 
+  const {loading}=useSelector((state)=>state.loaderStore)
 
   const classes = useStyles();
   const history = useHistory()
 
-  const [loading,setLoading]=useState(true)
-
-
    useEffect(()=>{
-    let url="http://54.162.199.74/products"
-    axios.get(url).then((res)=>{
-      setLoading(false)
-      dispatch(storeAllProduct(res.data))
-      
-    }).catch((e)=>{
-      console.log(e)
-    })
+    dispatch(storeAllProduct())
    },[])
 
    const handleClick = (id) => {

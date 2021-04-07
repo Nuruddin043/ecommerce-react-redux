@@ -3,7 +3,7 @@ import {Container,Grid,Card,CardActionArea,CardMedia,CardContent,Typography} fro
 import { makeStyles } from '@material-ui/core/styles';
 
 import { useSelector,} from 'react-redux'
-
+import { useHistory } from "react-router-dom";
 
 
 
@@ -24,6 +24,11 @@ const Product=()=>{
 
   const {productList}=useSelector((state)=>state.cartStore)
   const classes = useStyles();
+  const history = useHistory()
+
+  const handleClick = (id) => {
+    history.push(`/product_detail/${id}`);
+ };
 
 
     return (    

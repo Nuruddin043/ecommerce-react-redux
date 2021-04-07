@@ -1,8 +1,7 @@
-import React,{useState,useEffect} from 'react';
+import React,{useEffect} from 'react';
 import {useParams} from 'react-router-dom';
-import axios from 'axios'
 import { makeStyles } from '@material-ui/core/styles';
-import {Container,Grid,CircularProgress,Card,CardActionArea,CardMedia,CardContent,Typography,CardActions,Button} from '@material-ui/core';
+import {Container,CircularProgress,Card,CardMedia,CardContent,Typography,CardActions,Button} from '@material-ui/core';
 import {useSelector,useDispatch} from 'react-redux'
 
 import {storeSingleProduct} from '../../store/action/productAction'
@@ -17,25 +16,14 @@ const ProductDetail=()=>{
     const dispatch=useDispatch()
 
     const {selectedProduct}=useSelector((state)=>state.productStore)
-    
+    const {loading}=useSelector((state)=>state.loaderStore)
 
     const classes = useStyles();
     const params=useParams()
-    const [loading,setLoading] = useState(true)
+
     let {id}=params
     useEffect(() => {
-        async function getData(){
-            try{
-                
-                const {data}=await axios.get(`http://54.162.199.74/products/${id}`)
-              
-                dispatch(storeSingleProduct(data))
-                setLoading(false)
-            }catch(e){
-                console.log(e)
-            }
-        }
-        getData()
+        dispatch(storeSingleProduct(id))
     }, [id])
     const addToCart=()=>{
         dispatch({
