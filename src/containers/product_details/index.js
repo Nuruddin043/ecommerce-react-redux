@@ -45,7 +45,7 @@ const ProductDetail=()=>{
                             component="img"
                             alt={selectedProduct.title}
                             height="400"
-                            image={selectedProduct.image}
+                            image={'http://127.0.0.1:8080'+selectedProduct.image}
                             title={selectedProduct.title}
                         />
                         <CardContent>
@@ -54,7 +54,7 @@ const ProductDetail=()=>{
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p">
                              {selectedProduct.description}
-                             {selectedProduct.category}
+                             {selectedProduct.category.name}
                              <br />
                             </Typography>
                             <Typography variant="h6" color="primary" component="p">

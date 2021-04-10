@@ -40,11 +40,11 @@ const Product=()=>{
             {productList && productList.map((product, index) => {
                    return <Grid item md={4} sm={6} key={index} >
                     <Card className={classes.root}>
-                      <CardActionArea onClick={()=>handleClick(product.id)}>
+                      <CardActionArea onClick={()=>handleClick(product._id)}>
                         <CardMedia
                           className={classes.media}
-                          image={product.image}
-                          title="Contemplative Reptile"
+                          image={'http://127.0.0.1:8080'+product.image}
+                    
                         />
                         <CardContent>
                           <Typography gutterBottom variant="h6" style={{fontSize:'16px'}} >

@@ -31,7 +31,9 @@ const Navigation = () => {
             <Grid item>
               <MenuItem onClick={() => routePage("/")}> Total Item:{count}</MenuItem>
             </Grid>
-           
+            <Grid item>
+              <MenuItem onClick={() => routePage("/login")}> Log In</MenuItem>
+            </Grid>
            
           </Grid>
         </Toolbar>

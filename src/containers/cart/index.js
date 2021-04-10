@@ -40,7 +40,7 @@ const Product=()=>{
                       <CardActionArea onClick={()=>handleClick(product.id)}>
                         <CardMedia
                           className={classes.media}
-                          image={product.image}
+                          image={'http://127.0.0.1:8080'+product.image}
                           title="Contemplative Reptile"
                         />
                         <CardContent>

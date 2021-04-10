@@ -10,7 +10,10 @@ import Layout from '../src/components/layout'
 import Product from '../src/containers/product'
 import NotFound from '../src/containers/not_found'
 import Cart from '../src/containers/cart'
-import ProductDetail from '../src/containers/product_details'
+import ProductDetail from '../src/containers/product_details';
+import Order from '../src/containers/order';
+import LogIn from '../src/containers/login';
+import SignUp from '../src/containers/signup';
 
 function App() {
   return (
@@ -25,6 +28,15 @@ function App() {
             </Route>
             <Route exact path={'/cart'}>
               <Cart /> 
+            </Route>
+            <Route exact path={'/login'}>
+              <LogIn /> 
+            </Route>
+            <Route exact path={'/signup'}>
+              <SignUp /> 
+            </Route>
+            <Route exact path={'/order'}>
+              <Order /> 
             </Route>
             <Route exact path={'/404'}>
               <NotFound />
