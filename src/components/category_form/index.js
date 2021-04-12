@@ -1,20 +1,20 @@
-import React,{useReducer,useEffect,useState} from "react";
+import React,{useReducer,useState} from "react";
 import {
-  Avatar,
+
   CssBaseline,
   Typography,
   Container,
   Box,
   Grid,
   makeStyles,
-  Button,Collapse,IconButton,MenuItem,Select,InputLabel
+  Button,Collapse,IconButton
 } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-import {Link as RouteLink} from 'react-router-dom'
+
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import axios  from 'axios';
-import {useHistory} from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,27 +32,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductForm = () => {
+const CategoryForm = () => {
   const classes = useStyles();
   const [open, setOpen] =useState(false);
   const [msg, setMsg] =useState('');
-  const [option,setOption]=useState([])
-  const history=useHistory();
 
-  useEffect(()=>{
-    axios.get('http://127.0.0.1:8080/category').then((res)=>{
-        let data=res.data.map(obj => {
-            return <MenuItem value={obj._id} key={obj._id}>{obj.name}</MenuItem>
-       })
-       setOption(data)
-    })
-  },[])
 
      
   const [formInput, setFormInput] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      title:"",price:"",description:"",stock:"",category:"",image:""
+      name:"",description:"",image:""
     }
   );
   const handleInput = evt => {
@@ -86,21 +76,16 @@ const ProductForm = () => {
     let user=JSON.parse(sessionStorage.getItem('jwtToken'));
     let token=user.token
     console.log(formInput)
-    axios.post('http://127.0.0.1:8080/products',{
-        title: formInput.title,
-        price: parseFloat(formInput.price),
+    axios.post('http://127.0.0.1:8080/category',{
+        name: formInput.name,
         description: formInput.description,
-        image:formInput.image,
-        stock: formInput.stock,
-        category:{
-            _id:formInput.category
-        } 
+        image:formInput.image
     },{
         headers: {
           'authorization': `bearer ${token}` 
         }
       }).then((res)=>{
-        setMsg('Added new product.');
+        setMsg('Added new category.');
         setOpen(true);
         
     }).catch((e)=>{
@@ -134,7 +119,7 @@ const ProductForm = () => {
       <div className={classes.paper}>
    
         <Typography component="h1" variant="h5">
-          Add new product
+          Add new Category
         </Typography>
         <ValidatorForm  onSubmit={submitForm}>
           <Grid container spacing={2}>
@@ -145,60 +130,24 @@ const ProductForm = () => {
                   value={formInput.title}
                   fullWidth
                   required
-                  label="Product title"
-                  name="title"
+                  label="Category title"
+                  name="name"
                   onChange={handleInput}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <TextValidator
-                  variant="outlined"
-                  value={formInput.price}
-                  fullWidth
-                  required
-                  label="Product price"
-                  name="price"
-                  type="number"
-                  onChange={handleInput}
-                />
-              </Grid>
+       
               <Grid item xs={12}>
                 <TextValidator
                   variant="outlined"
                   value={formInput.description}
                   fullWidth
                   required
-                  label="Product description"
+                  label="Category description"
                   name="description"
                   onChange={handleInput}
                 />
               </Grid>  
-              <Grid item xs={12}>
-                <TextValidator
-                  variant="outlined"
-                  value={formInput.stock}
-                  fullWidth
-                  required
-                  label="Product stock"
-                  name="stock"
-                  type="number"
-                  onChange={handleInput}
-                />
-              </Grid>  
-              <Grid item xs={12}>
-              <InputLabel id="categorylabel">Category</InputLabel>
-                <Select
-                    labelId="categorylabel"
-                    id="category"
-                    name="category"
-                    value={formInput.category}
-                    fullWidth
-                    onChange={handleInput}
-                    >
-                    {option}
-                </Select>
-                
-              </Grid>
+  
               <Grid item xs={12}>
               <input type="file" name="image" required  onChange={convertImage}/>
                 
@@ -211,7 +160,7 @@ const ProductForm = () => {
             color="primary"
             className={classes.submit}
           >
-            Add Product
+            Add Category
           </Button>
         
         </ValidatorForm>
@@ -223,4 +172,4 @@ const ProductForm = () => {
   );
 };
 
-export default ProductForm;
+export default CategoryForm;
