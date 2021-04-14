@@ -1,6 +1,6 @@
-import React,{useReducer,useEffect,useState} from "react";
+import React,{useReducer,useState} from "react";
 import {
-  Avatar,
+
   CssBaseline,
   Typography,
   Container,
@@ -11,10 +11,10 @@ import {
 } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-import {Link as RouteLink} from 'react-router-dom'
+
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import axios  from 'axios';
-import {useHistory} from 'react-router-dom';
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -22,10 +22,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: "100%", 
@@ -35,16 +31,18 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(3, 0, 2),
   },
 }));
-const LogIn = () => {
+
+const CategoryForm = () => {
   const classes = useStyles();
   const [open, setOpen] =useState(false);
   const [msg, setMsg] =useState('');
-  const history=useHistory();
 
+
+     
   const [formInput, setFormInput] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      email:"",password:""
+      name:"",description:"",image:""
     }
   );
   const handleInput = evt => {
@@ -53,27 +51,45 @@ const LogIn = () => {
     setFormInput({ [name]: newValue });
   };
 
+  const convertImage=e=>{
+    const name = e.target.name;
+    getBase64(e.target.files[0]).then(result => {
+        setFormInput({ [name]: result });
+    })
+    
+  }
+  const getBase64 = file => {
+    return new Promise(resolve => {
+      let baseURL = "";
+      let reader = new FileReader();
+
+      reader.readAsDataURL(file);
+       reader.onload = () => {
+        baseURL = reader.result;
+        resolve(baseURL);
+      };
+    });
+    };
+
   const submitForm=(evt)=>{
     evt.preventDefault();
-
-    axios.post('http://127.0.0.1:8080/signin',{
-      email: formInput.email,
-      password: formInput.password,
-      
-    }).then((res)=>{
-        if(res.data.message==="Wrong Password"){
-          setMsg('Wrong Password');
-          setOpen(true);
-        }else if(res.data.userInfo){
-          sessionStorage.setItem('jwtToken',JSON.stringify(res.data.userInfo));
-          history.push('/');
-        }else{
-          setMsg('User not found');
-          setOpen(true);
+    let user=JSON.parse(sessionStorage.getItem('jwtToken'));
+    let token=user.token
+    
+    axios.post('http://127.0.0.1:8080/category',{
+        name: formInput.name,
+        description: formInput.description,
+        image:formInput.image
+    },{
+        headers: {
+          'authorization': `bearer ${token}` 
         }
+      }).then((res)=>{
+        setMsg('Added new category.');
+        setOpen(true);
         
     }).catch((e)=>{
-      setMsg('Server error...');
+      setMsg(e.response.data.error);
       setOpen(true);
     })
 
@@ -101,39 +117,40 @@ const LogIn = () => {
         </Alert>
       </Collapse>
       <div className={classes.paper}>
-        <Avatar className={classes.avatar}></Avatar>
+   
         <Typography component="h1" variant="h5">
-          Log in
+          Add new Category
         </Typography>
         <ValidatorForm  onSubmit={submitForm}>
           <Grid container spacing={2}>
               
-            <Grid item xs={12}>
+             <Grid item xs={12}>
                 <TextValidator
                   variant="outlined"
-                  value={formInput.email}
+                  value={formInput.title}
                   fullWidth
                   required
-                  id="email"
-                  label="Email Address"
-                  name="email"
+                  label="Category title"
+                  name="name"
                   onChange={handleInput}
-                  validators={['required', 'isEmail']}
-                  errorMessages={['this field is required', 'email is not valid']}
                 />
               </Grid>
+       
               <Grid item xs={12}>
                 <TextValidator
                   variant="outlined"
-                  required
+                  value={formInput.description}
                   fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
+                  required
+                  label="Category description"
+                  name="description"
                   onChange={handleInput}
                 />
+              </Grid>  
+  
+              <Grid item xs={12}>
+              <input type="file" name="image" required  onChange={convertImage}/>
+                
               </Grid>
           </Grid>
           <Button
@@ -143,15 +160,9 @@ const LogIn = () => {
             color="primary"
             className={classes.submit}
           >
-            Log In
+            Add Category
           </Button>
-          <Grid container justify="flex-end">
-            <Grid item>
-              <RouteLink to="/signup" >
-                Don't have an account? Sign up
-              </RouteLink>
-            </Grid>
-          </Grid>
+        
         </ValidatorForm>
       </div>
       <Box mt={5}>
@@ -161,4 +172,4 @@ const LogIn = () => {
   );
 };
 
-export default LogIn;
+export default CategoryForm;
