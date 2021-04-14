@@ -44,7 +44,7 @@ const Navigation = () => {
           <Grid container justify="flex-end">
      
             <Grid item>
-              <MenuItem onClick={() => routePage("/")}> Total Item:{count}</MenuItem>
+              <MenuItem onClick={() => routePage("/cart")}> Total Item:{count}</MenuItem>
             </Grid>
             <Grid item>
              {isLogin?<MenuItem onClick={logOut}> Logout</MenuItem>:<MenuItem onClick={() => routePage("/login")}> Log In</MenuItem>} 

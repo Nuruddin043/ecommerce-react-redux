@@ -75,7 +75,7 @@ const CategoryForm = () => {
     evt.preventDefault();
     let user=JSON.parse(sessionStorage.getItem('jwtToken'));
     let token=user.token
-    console.log(formInput)
+    
     axios.post('http://127.0.0.1:8080/category',{
         name: formInput.name,
         description: formInput.description,
