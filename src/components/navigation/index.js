@@ -1,28 +1,42 @@
-import React,{useState,useEffect} from "react";
-import { Toolbar, Container,Grid,MenuItem } from "@material-ui/core";
+import React,{useEffect,useState} from "react";
+import { Toolbar, Container,Grid,MenuItem ,Menu,Button} from "@material-ui/core";
 import {useHistory} from 'react-router-dom'
-import {useSelector} from 'react-redux'
-
+import {useSelector,useDispatch} from 'react-redux';
+import {addSessionData} from '../../store/action/sessionAction'
+import {storeAllCategory} from '../../store/action/categoryAction'
 const Navigation = () => {
-  const {count}=useSelector((state)=>state.cartStore)
+   const {count}=useSelector((state)=>state.cartStore)
+   const session=useSelector((state)=>state.sessionStore)
+   const categories=useSelector((state)=>state.categoryStore)
+
     const history=useHistory(false);
-    const [isLogin,setLogin]=useState()
+    const dispatch=useDispatch()
     const routePage=(url)=>{
         history.push(url)
-  }
-  useEffect(()=>{
-    let isAuth;
-    let userInfo=JSON.parse(sessionStorage.getItem('jwtToken'));
-    if(userInfo){
-      setLogin(true)
-    }else{
-      setLogin(false)
     }
-   },[])
+    useEffect(() => {
+      dispatch(storeAllCategory())
+    }, [])
     
     const logOut=()=>{
       sessionStorage.removeItem('jwtToken')
-      setLogin(false)
+      dispatch(addSessionData({token:'',role:'',expire_at:''}))
+    
+    }
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [anchorEl, setAnchorEl] = useState()
+
+    const recordButtonPosition = (event) => {
+        setAnchorEl(event.currentTarget);
+        setMenuOpen(true);
+    }
+
+    let routePage2 = (url) => {
+        history.push(url)
+        setMenuOpen(false);
+    }
+    let closeMenu=()=>{
+      setMenuOpen(false);
     }
   return (
     <>
@@ -35,19 +49,34 @@ const Navigation = () => {
             </Grid>
        
             <Grid item>
-              <MenuItem onClick={() => routePage("/cart")}>
-                Cart
-              </MenuItem>
+                <>
+                  <MenuItem onClick={recordButtonPosition}>
+                     Categories
+                  </MenuItem>
+                  <Menu
+                      anchorEl={anchorEl}
+                      open={menuOpen}
+                      onClose={closeMenu} >
+                      {categories.category_list.length>0 && categories.category_list.map((category,index)=>{
+                        return <MenuItem onClick={()=>routePage2(`/products/category/${category._id}`)} key={index}> {category.name} </MenuItem>
+                      })}
+
+                  </Menu>
+                  
+              </>
             </Grid>
           </Grid>
 
           <Grid container justify="flex-end">
      
             <Grid item>
-              <MenuItem onClick={() => routePage("/cart")}> Total Item:{count}</MenuItem>
+              <MenuItem onClick={() => routePage("/cart")}>Cart ({count})</MenuItem>
             </Grid>
             <Grid item>
-             {isLogin?<MenuItem onClick={logOut}> Logout</MenuItem>:<MenuItem onClick={() => routePage("/login")}> Log In</MenuItem>} 
+             {session.role=="admin" && session.expire_at>new Date().valueOf() &&<MenuItem onClick={() => routePage("/dashboard")}> Dashboard</MenuItem>} 
+            </Grid>
+            <Grid item>
+             {session.token && session.expire_at>new Date().valueOf()?<MenuItem onClick={logOut}> Logout</MenuItem>:<MenuItem onClick={() => routePage("/login")}> Log In</MenuItem>} 
             </Grid>
            
           </Grid>

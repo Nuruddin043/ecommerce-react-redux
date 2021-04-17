@@ -17,6 +17,7 @@ import SignUp from '../src/containers/signup';
 import PrivateRoute from './privateRoute'
 import PublicRoute from './publicRoute'
 import Dashboard from '../src/containers/dashboard'
+import ProductByCategory from '../src/containers/product_by_category'
 function App() {
   return (
     <Router>
@@ -28,10 +29,10 @@ function App() {
             <Route exact path={'/product_detail/:id'}>
                 <ProductDetail />
             </Route>
-            <Route exact path={'/cart'}>
-              <Cart /> 
+            <PrivateRoute exact path={"/cart"} component={Cart} />
+            <Route exact path={'/products/category/:category_id'}>
+              <ProductByCategory />
             </Route>
-         
             <PublicRoute restricted={true} component={LogIn} path="/login" exact />
             <PublicRoute restricted={true} component={SignUp} path="/signup" exact />
             <Route exact path={'/order'}>

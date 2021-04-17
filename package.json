@@ -13,6 +13,7 @@
     "i": "^0.3.6",
     "image-to-base64": "^2.2.0",
     "npm": "^7.9.0",
+    "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-material-ui-form-validator": "^2.1.4",

@@ -15,6 +15,8 @@ import {Link as RouteLink} from 'react-router-dom'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import axios  from 'axios';
 import {useHistory} from 'react-router-dom';
+import {useDispatch} from 'react-redux'
+import {addSessionData} from '../../store/action/sessionAction'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const LogIn = () => {
+  const dispatch=useDispatch()
   const classes = useStyles();
   const [open, setOpen] =useState(false);
   const [msg, setMsg] =useState('');
@@ -66,6 +69,7 @@ const LogIn = () => {
           setOpen(true);
         }else if(res.data.userInfo){
           sessionStorage.setItem('jwtToken',JSON.stringify(res.data.userInfo));
+          dispatch(addSessionData(res.data.userInfo))
           history.push('/');
         }else{
           setMsg('User not found');
