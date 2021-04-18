@@ -1,11 +1,4 @@
-
-// const CateogryUpdate = () => {
-//     return ( <> category </> );
-// }
- 
-// export default CateogryUpdate;
-
-import React,{useReducer,useState} from "react";
+import React,{useReducer,useState,useEffect} from "react";
 import {
 
   CssBaseline,
@@ -14,14 +7,14 @@ import {
   Box,
   Grid,
   makeStyles,
-  Button,Collapse,IconButton
+  Button,Collapse,IconButton,MenuItem,InputLabel,Select
 } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
 
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import axios  from 'axios';
-
+import {useSelector} from 'react-redux'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -39,11 +32,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CategoryForm = () => {
+const CategoryUpdateForm = () => {
+  const {category_list}=useSelector((state)=>state.categoryStore)
   const classes = useStyles();
   const [open, setOpen] =useState(false);
   const [msg, setMsg] =useState('');
-     
+  const [option,setOption]=useState([])
+  useEffect(()=>{
+    let data=category_list.map(obj => {
+      return <MenuItem value={obj._id} key={obj._id}>{obj.name}</MenuItem>
+    })
+    setOption(data)
+  },[])
+   
   const [formInput, setFormInput] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
@@ -128,6 +129,20 @@ const CategoryForm = () => {
         </Typography>
         <ValidatorForm  onSubmit={submitForm}>
           <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <InputLabel id="categorylabel">Category</InputLabel>
+                <Select
+                    labelId="categorylabel"
+                    id="category"
+                    name="category"
+                    value={formInput.category}
+                    fullWidth
+                    onChange={handleInput}
+                    >
+                    {option}
+                </Select>
+                
+              </Grid>
               
              <Grid item xs={12}>
                 <TextValidator
@@ -177,4 +192,4 @@ const CategoryForm = () => {
   );
 };
 
-export default CategoryForm;
+export default CategoryUpdateForm;

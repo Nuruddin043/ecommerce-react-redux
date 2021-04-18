@@ -15,6 +15,7 @@ import {Link as RouteLink} from 'react-router-dom'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import axios  from 'axios';
 import {useHistory} from 'react-router-dom';
+import {useSelector} from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -37,15 +38,14 @@ const ProductForm = () => {
   const [open, setOpen] =useState(false);
   const [msg, setMsg] =useState('');
   const [option,setOption]=useState([])
+  const {category_list}=useSelector((state)=>state.categoryStore)
   const history=useHistory();
 
   useEffect(()=>{
-    axios.get('http://127.0.0.1:8080/category').then((res)=>{
-        let data=res.data.map(obj => {
-            return <MenuItem value={obj._id} key={obj._id}>{obj.name}</MenuItem>
-       })
-       setOption(data)
+    let data=category_list.map(obj => {
+      return <MenuItem value={obj._id} key={obj._id}>{obj.name}</MenuItem>
     })
+    setOption(data)
   },[])
 
      

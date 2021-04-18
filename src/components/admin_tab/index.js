@@ -69,7 +69,7 @@ export default function AdminTab() {
         <CategoryDashboard />
       </TabPanel>
       <TabPanel value={value} index={1}>
-      
+        <ProductDashboard />
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three
