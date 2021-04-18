@@ -4,7 +4,7 @@ import CategoryForm from '../category_form';
 import Button from '@material-ui/core/Button';
 const CategoryDashboard = () => {
     const [currentForm,setForm]=useState('')
-    return (<div>
+    return (<>
     <div style={{marginTop:'20px'}}>
         <Button variant="contained" color="primary" onClick={()=>setForm('category')}>
             Add Category
@@ -16,7 +16,7 @@ const CategoryDashboard = () => {
     
     {currentForm ==="category" && <CategoryForm />}
     {currentForm ==="update_category" && <CateogryUpdate />}
-    </div>
+    </>
     );
 }
  

@@ -3,14 +3,16 @@ import CartReducer from './reducer/cartReducer';
 import productReducer from './reducer/productReducer';
 import loaderReducer from './reducer/loaderReducer'
 import sessionReducer from './reducer/sessionReducer';
-import categoryReducer from './reducer/categoryReducer'
+import categoryReducer from './reducer/categoryReducer';
+import notificationReducer from './reducer/notificationReducer';
 import thunk from 'redux-thunk'
 const mainReducer=combineReducers({
     cartStore:CartReducer,
     productStore:productReducer,
     loaderStore:loaderReducer,
     sessionStore:sessionReducer,
-    categoryStore:categoryReducer
+    categoryStore:categoryReducer,
+    notificationStore:notificationReducer
 })
 
 const composeEnhancers=window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

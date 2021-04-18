@@ -1,20 +1,11 @@
-import React,{useReducer,useState} from "react";
-import {
-
-  CssBaseline,
-  Typography,
-  Container,
-  Box,
-  Grid,
-  makeStyles,
-  Button,Collapse,IconButton
-} from "@material-ui/core";
+import React,{useReducer,useEffect} from "react";
+import { CssBaseline,Typography, Container, Box,Grid,makeStyles, Button,Collapse,IconButton} from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import axios  from 'axios';
-
+import {useDispatch,useSelector} from 'react-redux'
+import {addNewCateogry} from '../../store/action/categoryAction'
+import {setNotificationDisplay} from '../../store/action/notificationAction'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,12 +24,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const CategoryForm = () => {
+  const dispatch=useDispatch();
   const classes = useStyles();
-  const [open, setOpen] =useState(false);
-  const [msg, setMsg] =useState('');
-
-
-     
+  const notification=useSelector((state)=>state.notificationStore)     
   const [formInput, setFormInput] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
@@ -56,7 +44,6 @@ const CategoryForm = () => {
     getBase64(e.target.files[0]).then(result => {
         setFormInput({ [name]: result });
     })
-    
   }
   const getBase64 = file => {
     return new Promise(resolve => {
@@ -73,32 +60,21 @@ const CategoryForm = () => {
 
   const submitForm=(evt)=>{
     evt.preventDefault();
-    let user=JSON.parse(sessionStorage.getItem('jwtToken'));
-    let token=user.token
-    
-    axios.post('http://127.0.0.1:8080/category',{
-        name: formInput.name,
-        description: formInput.description,
-        image:formInput.image
-    },{
-        headers: {
-          'authorization': `bearer ${token}` 
-        }
-      }).then((res)=>{
-        setMsg('Added new category.');
-        setOpen(true);
-        
-    }).catch((e)=>{
-      setMsg(e.response.data.error);
-      setOpen(true);
-    })
-
+    dispatch(addNewCateogry(formInput))
   }
+  const setDisplay=()=>{
+    dispatch(setNotificationDisplay())
+  }
+  useEffect(()=>{
+    return(()=>{
+      dispatch(setNotificationDisplay())
+    })
+  },[])
 
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <Collapse in={open}>
+      <Collapse in={notification.display}>
         <Alert severity="error"
           action={
             <IconButton
@@ -106,14 +82,14 @@ const CategoryForm = () => {
               color="inherit"
               size="small"
               onClick={() => {
-                setOpen(false);
+                setDisplay();
               }}
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>
           }
         >
-          {msg}
+          {notification.message}
         </Alert>
       </Collapse>
       <div className={classes.paper}>
@@ -149,7 +125,7 @@ const CategoryForm = () => {
               </Grid>  
   
               <Grid item xs={12}>
-              <input type="file" name="image" required  onChange={convertImage}/>
+              <input type="file" name="image"   onChange={convertImage}/>
                 
               </Grid>
           </Grid>
