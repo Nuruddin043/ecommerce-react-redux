@@ -60,6 +60,35 @@ export const deleteCateogry=(category_id)=>async(dispatch,getStore)=>{
     })
 }
 
+export const updateCategory=(data)=>async(dispatch,getStore)=>{
+    const {token}=getStore().sessionStore
+
+    axios.patch(`${Config.BASE_URL}/category/${data.category_id}`,{
+        name: data.name,
+        description: data.description,
+        image:data.image
+    },{
+        headers: {
+          'authorization': `bearer ${token}` 
+        }
+      }).then((res)=>{
+        dispatch(storeNotification({
+            message:'Category Updated',
+            type:'SUCCESS',
+            display:true
+        }))
+        dispatch(storeAllCategory())
+        
+    }).catch((e)=>{
+        dispatch(storeNotification({
+            message:e.response.data.error,
+            type:'SUCCESS',
+            display:true
+        }))
+    })
+}
+
+
 
 const storeCategory=(data)=>{
     return {

@@ -1,6 +1,5 @@
 import React,{useReducer,useState,useEffect} from "react";
 import {
-
   CssBaseline,
   Typography,
   Container,
@@ -11,10 +10,11 @@ import {
 } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-
+import {updateCategory} from '../../store/action/categoryAction'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import axios  from 'axios';
-import {useSelector} from 'react-redux'
+import {useSelector,useDispatch} from 'react-redux'
+import {setNotificationDisplay} from '../../store/action/notificationAction'
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -34,21 +34,23 @@ const useStyles = makeStyles((theme) => ({
 
 const CategoryUpdateForm = () => {
   const {category_list}=useSelector((state)=>state.categoryStore)
+  const notification=useSelector((state)=>state.notificationStore)
+
+  const dispatch=useDispatch()
   const classes = useStyles();
-  const [open, setOpen] =useState(false);
-  const [msg, setMsg] =useState('');
   const [option,setOption]=useState([])
+
   useEffect(()=>{
     let data=category_list.map(obj => {
       return <MenuItem value={obj._id} key={obj._id}>{obj.name}</MenuItem>
     })
     setOption(data)
-  },[])
+  },[category_list])
    
   const [formInput, setFormInput] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      name:"",description:"",image:""
+      name:"",description:"",image:"",category_id:""
     }
   );
   const handleInput = evt => {
@@ -79,32 +81,22 @@ const CategoryUpdateForm = () => {
 
   const submitForm=(evt)=>{
     evt.preventDefault();
-    let user=JSON.parse(sessionStorage.getItem('jwtToken'));
-    let token=user.token
-    let category_id=''
-    axios.patch(`http://127.0.0.1:8080/category/${category_id}`,{
-        name: formInput.name,
-        description: formInput.description,
-        image:formInput.image
-    },{
-        headers: {
-          'authorization': `bearer ${token}` 
-        }
-      }).then((res)=>{
-        setMsg('Added new category.');
-        setOpen(true);
-        
-    }).catch((e)=>{
-      setMsg(e.response.data.error);
-      setOpen(true);
-    })
+    dispatch(updateCategory(formInput))
 
   }
 
+  const setDisplay=()=>{
+    dispatch(setNotificationDisplay())
+  }
+  useEffect(()=>{
+    return(()=>{
+      dispatch(setNotificationDisplay())
+    })
+  },[])
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <Collapse in={open}>
+      <Collapse in={notification.display}>
         <Alert severity="error"
           action={
             <IconButton
@@ -112,14 +104,14 @@ const CategoryUpdateForm = () => {
               color="inherit"
               size="small"
               onClick={() => {
-                setOpen(false);
+                setDisplay();
               }}
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>
           }
         >
-          {msg}
+          {notification.message}
         </Alert>
       </Collapse>
       <div className={classes.paper}>
@@ -134,8 +126,8 @@ const CategoryUpdateForm = () => {
                 <Select
                     labelId="categorylabel"
                     id="category"
-                    name="category"
-                    value={formInput.category}
+                    name="category_id"
+                    value={formInput.category_id}
                     fullWidth
                     onChange={handleInput}
                     >
@@ -149,7 +141,6 @@ const CategoryUpdateForm = () => {
                   variant="outlined"
                   value={formInput.title}
                   fullWidth
-                  required
                   label="Category title"
                   name="name"
                   onChange={handleInput}
@@ -161,7 +152,6 @@ const CategoryUpdateForm = () => {
                   variant="outlined"
                   value={formInput.description}
                   fullWidth
-                  required
                   label="Category description"
                   name="description"
                   onChange={handleInput}
@@ -169,7 +159,7 @@ const CategoryUpdateForm = () => {
               </Grid>  
   
               <Grid item xs={12}>
-              <input type="file" name="image" required  onChange={convertImage}/>
+              <input type="file" name="image"   onChange={convertImage}/>
                 
               </Grid>
           </Grid>

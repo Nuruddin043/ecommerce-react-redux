@@ -83,7 +83,8 @@ const SignUp = () => {
     }).then((res)=>{
         history.push('/login')
     }).catch((e)=>{
-      setMsg('Server error...');
+
+      setMsg(e.response.data);
       setOpen(true);
     })
 
@@ -258,7 +259,7 @@ const SignUp = () => {
             color="primary"
             className={classes.submit}
           >
-            Log In
+            Register
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
