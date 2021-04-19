@@ -63,6 +63,7 @@ export default function AdminTab() {
           <Tab label="Category" {...a11yProps(0)} />
           <Tab label="Product" {...a11yProps(1)} />
           <Tab label="User" {...a11yProps(2)} />
+          <Tab label="Order" {...a11yProps(3)} />
         </Tabs>
       </AppBar>
       <TabPanel value={value} index={0}>
@@ -73,6 +74,9 @@ export default function AdminTab() {
       </TabPanel>
       <TabPanel value={value} index={2}>
         Item Three
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        Order
       </TabPanel>
     </div>
   );
