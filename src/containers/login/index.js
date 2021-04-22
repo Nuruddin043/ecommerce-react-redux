@@ -17,6 +17,7 @@ import axios  from 'axios';
 import {useHistory} from 'react-router-dom';
 import {useDispatch} from 'react-redux'
 import {addSessionData} from '../../store/action/sessionAction'
+import {getCartInfo} from '../../store/action/cartAction'
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -70,6 +71,7 @@ const LogIn = () => {
         }else if(res.data.userInfo){
           sessionStorage.setItem('jwtToken',JSON.stringify(res.data.userInfo));
           dispatch(addSessionData(res.data.userInfo))
+          dispatch(getCartInfo())
           history.push('/');
         }else{
           setMsg('User not found');

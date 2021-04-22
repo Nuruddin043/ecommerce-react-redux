@@ -4,6 +4,7 @@ import {useHistory} from 'react-router-dom'
 import {useSelector,useDispatch} from 'react-redux';
 import {addSessionData} from '../../store/action/sessionAction'
 import {storeAllCategory} from '../../store/action/categoryAction'
+import {getCartInfo} from '../../store/action/cartAction'
 const Navigation = () => {
    const {count}=useSelector((state)=>state.cartStore)
    const session=useSelector((state)=>state.sessionStore)
@@ -16,12 +17,13 @@ const Navigation = () => {
     }
     useEffect(() => {
       dispatch(storeAllCategory())
+      dispatch(getCartInfo())
     }, [])
     
     const logOut=()=>{
       sessionStorage.removeItem('jwtToken')
       dispatch(addSessionData({token:'',role:'',expire_at:''}))
-    
+      dispatch(getCartInfo())
     }
     const [menuOpen, setMenuOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState()

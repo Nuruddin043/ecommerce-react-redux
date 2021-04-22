@@ -33,26 +33,21 @@ const Product=()=>{
 
     return (    
         <Container>
-        <Grid container spacing={2} style={{marginTop:'10px'}}>
+        <Grid container spacing={2} style={{marginTop:'10px'}} justify="center" alignItems="center">
             {productList && productList.map((product, index) => {
-                   return <Grid item md={4} sm={6} key={index} >
+                   return <Grid item md={6} sm={6} key={index} >
                     <Card className={classes.root}>
-                      <CardActionArea onClick={()=>handleClick(product.id)}>
-                        <CardMedia
-                          className={classes.media}
-                          image={'http://127.0.0.1:8080'+product.image}
-                          title="Contemplative Reptile"
-                        />
+                      {/* <CardActionArea onClick={()=>handleClick(product._id)}> */}
                         <CardContent>
                           <Typography gutterBottom variant="h6" style={{fontSize:'16px'}} >
-                            {product.title}
+                            {product._id}
                           </Typography>
                           <br />
                           <Typography variant="subtitle1" color="primary">
-                             Price: ${product.price}
+                            {product.quantity}
                           </Typography>
                         </CardContent>
-                      </CardActionArea>
+                      {/* </CardActionArea> */}
                     </Card>
                  </Grid>
                           

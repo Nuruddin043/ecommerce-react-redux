@@ -8,38 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import ProductDashboard from '../../components/product_dashboard'
 import CategoryDashboard from '../../components/category_dashboard'
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+import { Switch, Route, Link, BrowserRouter, Redirect } from "react-router-dom";
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={3}>
-          {children}
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `dashboard-tab-${index}`,
-    'aria-controls': `dashboard-tabpanel-${index}`,
-  };
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,34 +20,36 @@ const useStyles = makeStyles((theme) => ({
 
 export default function AdminTab() {
   const classes = useStyles();
-  const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
+  const allTabs = ['/admin/category', '/admin/product', '/admin/order','/admin/user'];
   return (
     <div className={classes.root}>
-      <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
-          <Tab label="Category" {...a11yProps(0)} />
-          <Tab label="Product" {...a11yProps(1)} />
-          <Tab label="User" {...a11yProps(2)} />
-          <Tab label="Order" {...a11yProps(3)} />
-        </Tabs>
-      </AppBar>
-      <TabPanel value={value} index={0}>
-        <CategoryDashboard />
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <ProductDashboard />
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        Item Three
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        Order
-      </TabPanel>
+
+
+      <BrowserRouter>
+      <div className="App">
+        <Route
+          path="/"
+          render={({ location }) => (
+            <>
+              <Tabs value={location.pathname}>
+                <Tab label="Category" value="/admin/category" component={Link} to={allTabs[0]} />
+                <Tab label="Product" value="/admin/product" component={Link} to={allTabs[1]} />
+                <Tab label="Order" value="/admin/order" component={Link} to={allTabs[2]} />
+                <Tab label="User" value="/admin/user" component={Link} to={allTabs[2]} />
+              
+              </Tabs>
+              <Switch>
+                <Route path={allTabs[0]} render={() => <ProductDashboard />} />
+                <Route path={allTabs[1]} render={() => <CategoryDashboard />} />
+                <Route path={allTabs[2]} render={() => <div>Order</div>} />
+                <Route path={allTabs[3]} render={() => <div>User</div>} />
+              </Switch>
+            </>
+          )}
+        />
+      </div>
+    </BrowserRouter>
     </div>
   );
 }
