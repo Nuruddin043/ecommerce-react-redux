@@ -1,11 +1,11 @@
 import React,{useEffect} from 'react';
 import {useDispatch,useSelector} from 'react-redux'
-import {getAllorderinfo} from ''
+// import {getAllorderinfo} from ''
 const OrderDashboard = () => {
     const dispatch=useDispatch();
-    useEffect(()=>{
-        dispatch(getAllorderinfo());
-    },[])
+    // useEffect(()=>{
+    //     dispatch(getAllorderinfo());
+    // },[])
     return ( <>
     
     </>
