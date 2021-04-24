@@ -44,6 +44,18 @@ export const getCartInfo=()=>async(dispatch,getStore)=>{
     dispatch(getCart(data))
 }
 
+export const checkoutOrder=()=>async(dispatch,getStore)=>{
+    const {token}=getStore().sessionStore
+
+    let {data}=await axios.get(Config.BASE_URL+'/order/checkout',{
+        headers: {
+            'authorization': `bearer ${token}` 
+          }
+    })
+    dispatch(getCartInfo())
+}
+
+
 const getCart=(data)=>{
     if(data.products){
         return {

@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
 import ProductDashboard from '../../components/product_dashboard'
 import CategoryDashboard from '../../components/category_dashboard'
+import OrderDashboard from '../../components/order_dashboard'
 import { Switch, Route, Link, BrowserRouter, Redirect } from "react-router-dom";
 
 
@@ -36,13 +37,13 @@ export default function AdminTab() {
                 <Tab label="Category" value="/admin/category" component={Link} to={allTabs[0]} />
                 <Tab label="Product" value="/admin/product" component={Link} to={allTabs[1]} />
                 <Tab label="Order" value="/admin/order" component={Link} to={allTabs[2]} />
-                <Tab label="User" value="/admin/user" component={Link} to={allTabs[2]} />
+                <Tab label="User" value="/admin/user" component={Link} to={allTabs[3]} />
               
               </Tabs>
               <Switch>
                 <Route path={allTabs[0]} render={() => <ProductDashboard />} />
                 <Route path={allTabs[1]} render={() => <CategoryDashboard />} />
-                <Route path={allTabs[2]} render={() => <div>Order</div>} />
+                <Route path={allTabs[2]} render={() => <OrderDashboard />} />
                 <Route path={allTabs[3]} render={() => <div>User</div>} />
               </Switch>
             </>
