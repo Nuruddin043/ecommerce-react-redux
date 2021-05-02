@@ -42,6 +42,7 @@ const Product=()=>{
   },[])
   const checkout=()=>{
     dispatch(checkoutOrder())
+    history.push('/order')
   }
 
     return (    

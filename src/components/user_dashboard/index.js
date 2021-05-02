@@ -1,6 +1,6 @@
 import React,{useEffect} from 'react';
 import {useDispatch,useSelector} from 'react-redux'
-import {getuserOrder} from '../../store/action/orderAction';
+import {getUserList} from '../../store/action/userAction';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -16,12 +16,12 @@ const useStyles = makeStyles({
   },
 });
 
-const Order = () => {
+const UserDashboard = () => {
     const dispatch=useDispatch();
-    const {userorderList}=useSelector((state)=>state.orderStore)
+    const {userList}=useSelector((state)=>state.userStore)
     const classes = useStyles();
     useEffect(()=>{
-        dispatch(getuserOrder());
+        dispatch(getUserList());
     },[])
     
 
@@ -30,24 +30,25 @@ const Order = () => {
         <Table className={classes.table} aria-label="simple table">
             <TableHead>
             <TableRow>
-                <TableCell>OrderId</TableCell>
-                <TableCell align="left">Products</TableCell>
-                <TableCell align="left">Status</TableCell>
+                <TableCell>userId</TableCell>
+                <TableCell align="left">Username</TableCell>
+                <TableCell align="left">Phone</TableCell>
+                <TableCell align="left">Role</TableCell>
+  
             </TableRow>
             </TableHead>
             <TableBody>
-            {userorderList.length>0 && userorderList.map((row) => (
+            {userList.map((row) => (
                 <TableRow key={row._id}>
                     <TableCell component="th" scope="row">
                         {row._id}
                     </TableCell>
- 
+                    <TableCell align="left">{row.username}</TableCell>
+                    <TableCell align="left">{row.phone}</TableCell>
                     <TableCell align="left">
-                        {row.products.map((row2) => (
-                            <p style={{textAlign:"left"}}>{row2.productId.title}</p>
-                        ))}
+                             {row.role}
                     </TableCell>
-                    <TableCell align="left">{row.status}</TableCell>
+               
                 </TableRow>
             ))}
             </TableBody>
@@ -56,4 +57,4 @@ const Order = () => {
     );
 }
  
-export default Order;
+export default UserDashboard;

@@ -35,10 +35,8 @@ function App() {
             </Route>
             <PublicRoute restricted={true} component={LogIn} path="/login" exact />
             <PublicRoute restricted={true} component={SignUp} path="/signup" exact />
-            <Route exact path={'/order'}>
-              <Order /> 
-            </Route>
             <PrivateRoute exact path={"/dashboard"} component={Dashboard} />
+            <PrivateRoute exact path={"/order"} component={Order} />
             <Route exact path={'/404'}>
               <NotFound />
             </Route>

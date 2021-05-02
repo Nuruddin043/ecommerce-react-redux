@@ -5,6 +5,9 @@ import loaderReducer from './reducer/loaderReducer'
 import sessionReducer from './reducer/sessionReducer';
 import categoryReducer from './reducer/categoryReducer';
 import notificationReducer from './reducer/notificationReducer';
+import orderReducer from './reducer/orderReducer';
+import userReducer from './reducer/userReducer';
+
 import thunk from 'redux-thunk'
 const mainReducer=combineReducers({
     cartStore:CartReducer,
@@ -12,7 +15,9 @@ const mainReducer=combineReducers({
     loaderStore:loaderReducer,
     sessionStore:sessionReducer,
     categoryStore:categoryReducer,
-    notificationStore:notificationReducer
+    notificationStore:notificationReducer,
+    orderStore:orderReducer,
+    userStore:userReducer
 })
 
 const composeEnhancers=window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;

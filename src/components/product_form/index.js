@@ -1,6 +1,5 @@
 import React,{useReducer,useEffect,useState} from "react";
 import {
-  Avatar,
   CssBaseline,
   Typography,
   Container,
@@ -11,7 +10,6 @@ import {
 } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-import {Link as RouteLink} from 'react-router-dom'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
 import axios  from 'axios';
 import {useHistory} from 'react-router-dom';

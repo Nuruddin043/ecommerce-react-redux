@@ -1,5 +1,5 @@
 import React,{useEffect,useState} from "react";
-import { Toolbar, Container,Grid,MenuItem ,Menu,Button} from "@material-ui/core";
+import { Toolbar, Container,Grid,MenuItem ,Menu} from "@material-ui/core";
 import {useHistory} from 'react-router-dom'
 import {useSelector,useDispatch} from 'react-redux';
 import {addSessionData} from '../../store/action/sessionAction'
@@ -73,6 +73,9 @@ const Navigation = () => {
      
             <Grid item>
               <MenuItem onClick={() => routePage("/cart")}>Cart ({count})</MenuItem>
+            </Grid>
+            <Grid item>
+             {session.expire_at>new Date().valueOf() &&<MenuItem onClick={() => routePage("/order")}> Order</MenuItem>} 
             </Grid>
             <Grid item>
              {session.role=="admin" && session.expire_at>new Date().valueOf() &&<MenuItem onClick={() => routePage("/dashboard")}> Dashboard</MenuItem>} 
