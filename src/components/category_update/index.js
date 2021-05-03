@@ -1,4 +1,4 @@
-import React,{useReducer,useEffect,useState} from "react";
+import React,{useReducer,useState,useEffect} from "react";
 import {
   CssBaseline,
   Typography,
@@ -6,15 +6,15 @@ import {
   Box,
   Grid,
   makeStyles,
-  Button,Collapse,IconButton,MenuItem,Select,InputLabel
+  Button,Collapse,IconButton,MenuItem,InputLabel,Select
 } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
+import {updateCategory} from '../../store/action/categoryAction'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import axios  from 'axios';
-import {useHistory} from 'react-router-dom';
-import {useSelector,useDispatch} from 'react-redux';
-import {storeAllProduct} from '../../store/action/productAction'
+import {useSelector,useDispatch} from 'react-redux'
+import {setNotificationDisplay} from '../../store/action/notificationAction'
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,27 +32,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductForm = () => {
-  const classes = useStyles();
-  const dispatch=useDispatch()
-  const [open, setOpen] =useState(false);
-  const [msg, setMsg] =useState('');
-  const [option,setOption]=useState([])
+const CategoryUpdateForm = () => {
   const {category_list}=useSelector((state)=>state.categoryStore)
-  const history=useHistory();
+  const notification=useSelector((state)=>state.notificationStore)
+
+  const dispatch=useDispatch()
+  const classes = useStyles();
+  const [option,setOption]=useState([])
 
   useEffect(()=>{
     let data=category_list.map(obj => {
       return <MenuItem value={obj._id} key={obj._id}>{obj.name}</MenuItem>
     })
     setOption(data)
-  },[])
-
-     
+  },[category_list])
+   
   const [formInput, setFormInput] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      title:"",price:"",description:"",stock:"",category:"",image:""
+      name:"",description:"",image:"",category_id:""
     }
   );
   const handleInput = evt => {
@@ -83,37 +81,22 @@ const ProductForm = () => {
 
   const submitForm=(evt)=>{
     evt.preventDefault();
-    let user=JSON.parse(sessionStorage.getItem('jwtToken'));
-    let token=user.token
-    console.log(formInput)
-    axios.post('http://127.0.0.1:8080/products',{
-        title: formInput.title,
-        price: parseFloat(formInput.price),
-        description: formInput.description,
-        image:formInput.image,
-        stock: formInput.stock,
-        category:{
-            _id:formInput.category
-        } 
-    },{
-        headers: {
-          'authorization': `bearer ${token}` 
-        }
-      }).then((res)=>{
-        setMsg('Added new product.');
-        setOpen(true);
-        dispatch(storeAllProduct())
-    }).catch((e)=>{
-      setMsg(e.response.data.error);
-      setOpen(true);
-    })
+    dispatch(updateCategory(formInput))
 
   }
 
+  const setDisplay=()=>{
+    dispatch(setNotificationDisplay())
+  }
+  useEffect(()=>{
+    return(()=>{
+      dispatch(setNotificationDisplay())
+    })
+  },[])
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <Collapse in={open}>
+      <Collapse in={notification.display}>
         <Alert severity="error"
           action={
             <IconButton
@@ -121,77 +104,30 @@ const ProductForm = () => {
               color="inherit"
               size="small"
               onClick={() => {
-                setOpen(false);
+                setDisplay();
               }}
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>
           }
         >
-          {msg}
+          {notification.message}
         </Alert>
       </Collapse>
       <div className={classes.paper}>
    
         <Typography component="h1" variant="h5">
-          Add new product
+         Update Category
         </Typography>
         <ValidatorForm  onSubmit={submitForm}>
           <Grid container spacing={2}>
-              
-             <Grid item xs={12}>
-                <TextValidator
-                  variant="outlined"
-                  value={formInput.title}
-                  fullWidth
-                  required
-                  label="Product title"
-                  name="title"
-                  onChange={handleInput}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextValidator
-                  variant="outlined"
-                  value={formInput.price}
-                  fullWidth
-                  required
-                  label="Product price"
-                  name="price"
-                  type="number"
-                  onChange={handleInput}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextValidator
-                  variant="outlined"
-                  value={formInput.description}
-                  fullWidth
-                  required
-                  label="Product description"
-                  name="description"
-                  onChange={handleInput}
-                />
-              </Grid>  
-              <Grid item xs={12}>
-                <TextValidator
-                  variant="outlined"
-                  value={formInput.stock}
-                  fullWidth
-                  required
-                  label="Product stock"
-                  name="stock"
-                  type="number"
-                  onChange={handleInput}
-                />
-              </Grid>  
-              <Grid item xs={12}>
+            <Grid item xs={12}>
               <InputLabel id="categorylabel">Category</InputLabel>
                 <Select
                     labelId="categorylabel"
                     id="category"
-                    name="category"
-                    value={formInput.category}
+                    name="category_id"
+                    value={formInput.category_id}
                     fullWidth
                     onChange={handleInput}
                     >
@@ -199,8 +135,31 @@ const ProductForm = () => {
                 </Select>
                 
               </Grid>
+              
+             <Grid item xs={12}>
+                <TextValidator
+                  variant="outlined"
+                  value={formInput.title}
+                  fullWidth
+                  label="Category title"
+                  name="name"
+                  onChange={handleInput}
+                />
+              </Grid>
+       
               <Grid item xs={12}>
-              <input type="file" name="image" required  onChange={convertImage}/>
+                <TextValidator
+                  variant="outlined"
+                  value={formInput.description}
+                  fullWidth
+                  label="Category description"
+                  name="description"
+                  onChange={handleInput}
+                />
+              </Grid>  
+  
+              <Grid item xs={12}>
+              <input type="file" name="image"   onChange={convertImage}/>
                 
               </Grid>
           </Grid>
@@ -211,7 +170,7 @@ const ProductForm = () => {
             color="primary"
             className={classes.submit}
           >
-            Add Product
+            Update Category
           </Button>
         
         </ValidatorForm>
@@ -223,4 +182,4 @@ const ProductForm = () => {
   );
 };
 
-export default ProductForm;
+export default CategoryUpdateForm;

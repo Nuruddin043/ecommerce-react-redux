@@ -1,4 +1,4 @@
-import React,{useReducer,useEffect,useState} from "react";
+import React,{useReducer,useState,useEffect} from "react";
 import {
   CssBaseline,
   Typography,
@@ -6,15 +6,15 @@ import {
   Box,
   Grid,
   makeStyles,
-  Button,Collapse,IconButton,MenuItem,Select,InputLabel
+  Button,Collapse,IconButton,MenuItem,InputLabel,Select
 } from "@material-ui/core";
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
+import {updateProduct} from '../../store/action/productAction'
 import { ValidatorForm, TextValidator } from 'react-material-ui-form-validator';
-import axios  from 'axios';
-import {useHistory} from 'react-router-dom';
-import {useSelector,useDispatch} from 'react-redux';
-import {storeAllProduct} from '../../store/action/productAction'
+import {useSelector,useDispatch} from 'react-redux'
+import {setNotificationDisplay} from '../../store/action/notificationAction'
+
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -32,29 +32,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProductForm = () => {
-  const classes = useStyles();
+const ProductUpdate = () => {
+  const {productList}=useSelector((state)=>state.productStore)
+  const notification=useSelector((state)=>state.notificationStore)
+
   const dispatch=useDispatch()
-  const [open, setOpen] =useState(false);
-  const [msg, setMsg] =useState('');
+  const classes = useStyles();
   const [option,setOption]=useState([])
-  const {category_list}=useSelector((state)=>state.categoryStore)
-  const history=useHistory();
 
   useEffect(()=>{
-    let data=category_list.map(obj => {
-      return <MenuItem value={obj._id} key={obj._id}>{obj.name}</MenuItem>
+    let data=productList.map(obj => {
+      return <MenuItem value={obj._id} key={obj._id}>{obj.title}</MenuItem>
     })
     setOption(data)
-  },[])
-
-     
+  },[productList])
+   
   const [formInput, setFormInput] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      title:"",price:"",description:"",stock:"",category:"",image:""
+      title:"",price:"",description:"",stock:"",category:"",image:"",product_id:""
     }
   );
+
   const handleInput = evt => {
     const name = evt.target.name;
     const newValue = evt.target.value;
@@ -83,37 +82,22 @@ const ProductForm = () => {
 
   const submitForm=(evt)=>{
     evt.preventDefault();
-    let user=JSON.parse(sessionStorage.getItem('jwtToken'));
-    let token=user.token
-    console.log(formInput)
-    axios.post('http://127.0.0.1:8080/products',{
-        title: formInput.title,
-        price: parseFloat(formInput.price),
-        description: formInput.description,
-        image:formInput.image,
-        stock: formInput.stock,
-        category:{
-            _id:formInput.category
-        } 
-    },{
-        headers: {
-          'authorization': `bearer ${token}` 
-        }
-      }).then((res)=>{
-        setMsg('Added new product.');
-        setOpen(true);
-        dispatch(storeAllProduct())
-    }).catch((e)=>{
-      setMsg(e.response.data.error);
-      setOpen(true);
-    })
+    dispatch(updateProduct(formInput))
 
   }
 
+  const setDisplay=()=>{
+    dispatch(setNotificationDisplay())
+  }
+  useEffect(()=>{
+    return(()=>{
+      dispatch(setNotificationDisplay())
+    })
+  },[])
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
-      <Collapse in={open}>
+      <Collapse in={notification.display}>
         <Alert severity="error"
           action={
             <IconButton
@@ -121,30 +105,44 @@ const ProductForm = () => {
               color="inherit"
               size="small"
               onClick={() => {
-                setOpen(false);
+                setDisplay();
               }}
             >
               <CloseIcon fontSize="inherit" />
             </IconButton>
           }
         >
-          {msg}
+          {notification.message}
         </Alert>
       </Collapse>
       <div className={classes.paper}>
    
         <Typography component="h1" variant="h5">
-          Add new product
+         Update Product
         </Typography>
         <ValidatorForm  onSubmit={submitForm}>
           <Grid container spacing={2}>
-              
+       
+              <Grid item xs={12}>
+              <InputLabel id="productLabel">Product</InputLabel>
+                <Select
+                    labelId="productLabel"
+                    id="product"
+                    name="product_id"
+                    value={formInput.product_id}
+                    fullWidth
+                    onChange={handleInput}
+                    >
+                    {option}
+                </Select>
+                
+              </Grid>
              <Grid item xs={12}>
                 <TextValidator
                   variant="outlined"
                   value={formInput.title}
                   fullWidth
-                  required
+                  
                   label="Product title"
                   name="title"
                   onChange={handleInput}
@@ -155,7 +153,7 @@ const ProductForm = () => {
                   variant="outlined"
                   value={formInput.price}
                   fullWidth
-                  required
+                  
                   label="Product price"
                   name="price"
                   type="number"
@@ -167,7 +165,7 @@ const ProductForm = () => {
                   variant="outlined"
                   value={formInput.description}
                   fullWidth
-                  required
+                  
                   label="Product description"
                   name="description"
                   onChange={handleInput}
@@ -178,7 +176,7 @@ const ProductForm = () => {
                   variant="outlined"
                   value={formInput.stock}
                   fullWidth
-                  required
+                  
                   label="Product stock"
                   name="stock"
                   type="number"
@@ -200,7 +198,7 @@ const ProductForm = () => {
                 
               </Grid>
               <Grid item xs={12}>
-              <input type="file" name="image" required  onChange={convertImage}/>
+              <input type="file" name="image"   onChange={convertImage}/>
                 
               </Grid>
           </Grid>
@@ -211,7 +209,7 @@ const ProductForm = () => {
             color="primary"
             className={classes.submit}
           >
-            Add Product
+            Update Product
           </Button>
         
         </ValidatorForm>
@@ -223,4 +221,4 @@ const ProductForm = () => {
   );
 };
 
-export default ProductForm;
+export default ProductUpdate;

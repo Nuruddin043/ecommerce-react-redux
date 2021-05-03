@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from 'react';
+import React,{useEffect} from 'react';
 import {useParams} from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import {Container,CircularProgress,Card,CardMedia,CardContent,Typography,CardActions,Button,Collapse,IconButton} from '@material-ui/core';
@@ -6,8 +6,9 @@ import {useSelector,useDispatch} from 'react-redux'
 import  {useHistory} from 'react-router-dom'
 import Alert from '@material-ui/lab/Alert';
 import CloseIcon from '@material-ui/icons/Close';
-import axios  from 'axios';
 import {storeSingleProduct} from '../../store/action/productAction'
+import {addToCart} from '../../store/action/cartAction'
+import {setNotificationDisplay} from '../../store/action/notificationAction'
 const useStyles = makeStyles({
     root: {
         marginTop:20
@@ -15,13 +16,13 @@ const useStyles = makeStyles({
 });
 
 const ProductDetail=()=>{
-    const {count,productList}=useSelector((state)=>state.cartStore)
-    const [open, setOpen] =useState(false);
-    const [msg, setMsg] =useState('');
+    
     const dispatch=useDispatch()
     const history=useHistory()
     const {selectedProduct}=useSelector((state)=>state.productStore)
     const {loading}=useSelector((state)=>state.loaderStore)
+    const notification=useSelector((state)=>state.notificationStore)     
+    const session=useSelector((state)=>state.sessionStore)
 
     const classes = useStyles();
     const params=useParams()
@@ -30,59 +31,44 @@ const ProductDetail=()=>{
     useEffect(() => {
         dispatch(storeSingleProduct(id))
     }, [id])
-    const addToCart=()=>{
-        let user=JSON.parse(sessionStorage.getItem('jwtToken'));
-        if(!user){
-            history.push('/login')
-        }else{
-            let token=user.token
-            dispatch({
-                type:'ADD_TO_CART',
-                payload:{
-                    count:count? count+1 :1,
-                    productList:productList?productList.concat(selectedProduct) :[...selectedProduct]
-                }
-            })
-            axios.post('http://127.0.0.1:8080/cart',{
-                product:{
-                    id: selectedProduct._id,
-                    quantity : 1
-                },
-            },{
-                headers: {
-                'authorization': `bearer ${token}` 
-                }
-            }).then((res)=>{
-                setMsg('Product added to cart.');
-                setOpen(true);
-                
-            }).catch((e)=>{
-               setMsg(e.response.data.error);
-            setOpen(true);
-            })
+    const add_product=()=>{
+
+        if(session.token && session.expire_at>new Date().valueOf()){
+            dispatch(addToCart(selectedProduct))
             
+        }else{
+            history.push('/login')
         }
         
     }
+    const setDisplay=()=>{
+        dispatch(setNotificationDisplay())
+      }
+      useEffect(()=>{
+        return(()=>{
+          dispatch(setNotificationDisplay())
+        })
+      },[])
+
     return (
         <Container>
                 {loading && <CircularProgress  style={{marginLeft: '50%',marginTop:'30%'}} />}
-                <Collapse in={open}>
-                    <Alert severity="success"
+                <Collapse in={notification.display}>
+                    <Alert severity="error"
                     action={
                         <IconButton
                         aria-label="close"
                         color="inherit"
                         size="small"
                         onClick={() => {
-                            setOpen(false);
+                            setDisplay();
                         }}
                         >
                         <CloseIcon fontSize="inherit" />
                         </IconButton>
                     }
                     >
-                    {msg}
+                    {notification.message}
                     </Alert>
                 </Collapse>
                 {selectedProduct.hasOwnProperty('title') &&
@@ -101,11 +87,11 @@ const ProductDetail=()=>{
                             {selectedProduct.title}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p">
-                             {selectedProduct.description}
-                             {selectedProduct.category.name}
-                             <br />
+                             {selectedProduct.description} <br /> <br /> <br /> 
+                             Category:{selectedProduct.category.name}
+                             <br /><br /> 
                             </Typography>
-                            <Typography variant="h6" color="primary" component="p">
+                            <Typography variant="h6" component="p">
                                 price: ${selectedProduct.price} 
                             </Typography>
                             
@@ -113,7 +99,7 @@ const ProductDetail=()=>{
                         </CardContent>
                         
                         <CardActions>
-                        <Button size="small" color="primary" variant="contained" onClick={addToCart}>
+                        <Button size="small" color="primary" variant="contained" onClick={add_product}>
                             Add To Cart
                         </Button>
                     </CardActions>
