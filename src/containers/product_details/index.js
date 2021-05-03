@@ -87,11 +87,11 @@ const ProductDetail=()=>{
                             {selectedProduct.title}
                             </Typography>
                             <Typography variant="body2" color="textSecondary" component="p">
-                             {selectedProduct.description}
-                             {selectedProduct.category.name}
-                             <br />
+                             {selectedProduct.description} <br /> <br /> <br /> 
+                             Category:{selectedProduct.category.name}
+                             <br /><br /> 
                             </Typography>
-                            <Typography variant="h6" color="primary" component="p">
+                            <Typography variant="h6" component="p">
                                 price: ${selectedProduct.price} 
                             </Typography>
                             

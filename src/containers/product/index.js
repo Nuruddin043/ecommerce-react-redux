@@ -51,7 +51,7 @@ const Product=()=>{
                             {product.title}
                           </Typography>
                           <br />
-                          <Typography variant="subtitle1" color="primary">
+                          <Typography variant="subtitle1" >
                              Price: ${product.price}
                           </Typography>
                         </CardContent>

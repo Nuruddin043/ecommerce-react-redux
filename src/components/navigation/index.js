@@ -56,11 +56,12 @@ const Navigation = () => {
                      Categories
                   </MenuItem>
                   <Menu
+                      style={{marginTop:"35px"}}
                       anchorEl={anchorEl}
                       open={menuOpen}
                       onClose={closeMenu} >
                       {categories.category_list.length>0 && categories.category_list.map((category,index)=>{
-                        return <MenuItem onClick={()=>routePage2(`/products/category/${category._id}`)} key={index}> {category.name} </MenuItem>
+                        return <MenuItem onClick={()=>routePage2(`/products/category/${category._id}`)} key={index} style={{width:'110px'}}> {category.name} </MenuItem>
                       })}
 
                   </Menu>

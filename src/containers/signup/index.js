@@ -263,7 +263,7 @@ const SignUp = () => {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <RouteLink to="/login" >
+              <RouteLink to="/login" style={{color:"white"}}>
               Already have an account? Sign in
               </RouteLink>
             </Grid>

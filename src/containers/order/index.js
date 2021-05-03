@@ -47,7 +47,8 @@ const Order = () => {
                             <p style={{textAlign:"left"}}>{row2.productId.title}</p>
                         ))}
                     </TableCell>
-                    <TableCell align="left">{row.status}</TableCell>
+                    <TableCell align="left">{row.status == 0 ? <p style={{color:"yellowgreen"}}>Pending</p>
+                    :row.status == 1 ? <p style={{color:'Green'}}>Delivered</p>:<p style={{color:"red"}}>Canceled</p>}</TableCell>
                 </TableRow>
             ))}
             </TableBody>
