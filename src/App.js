@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useEffect}from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -18,7 +18,13 @@ import PrivateRoute from './privateRoute'
 import PublicRoute from './publicRoute'
 import Dashboard from '../src/containers/dashboard'
 import ProductByCategory from '../src/containers/product_by_category'
+import {addSessionData2} from  '../src/store/action/sessionAction'
+import {useDispatch} from 'react-redux'
 function App() {
+   const dispatch=useDispatch()
+   useEffect(() => {
+      dispatch(addSessionData2())
+  }, [])
   return (
     <Router>
       <Layout>

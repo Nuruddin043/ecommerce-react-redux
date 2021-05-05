@@ -1,7 +1,7 @@
 import axios from 'axios'
 import {ActionTypes} from '../types'
 import {Config} from '../../config';
-
+import {getuserOrder} from './orderAction'
 
 
 export const addToCart=(product)=>async(dispatch,getStore)=>{
@@ -53,6 +53,7 @@ export const checkoutOrder=()=>async(dispatch,getStore)=>{
           }
     })
     dispatch(getCartInfo())
+    dispatch(getuserOrder())
 }
 
 

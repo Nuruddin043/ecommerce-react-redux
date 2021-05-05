@@ -5,6 +5,15 @@ export const addSessionData=(data)=>async(dispatch,getStore)=>{
 }
 
 
+
+export const addSessionData2=()=>async(dispatch,getStore)=>{
+    const data=JSON.parse(sessionStorage.getItem('jwtToken'));
+    if(data){
+        dispatch(storeSession(data)) 
+    }
+    
+}
+
 const storeSession=(data)=>{
     return {
         type:ActionTypes.STORE_SESSION,
